@@ -136,7 +136,7 @@ int smoothAndFindMin(int * data){
 
   int smoothedData[dataSize-filterSize];
   int i, j;
-  int minValue = 32767;
+  int minValue;
   int minIndex = -1;
 
   // iterate over data, nested iterate over filter and multiply in filter
@@ -147,7 +147,7 @@ int smoothAndFindMin(int * data){
     }
 
     //capture min value
-    if (smoothedData[i] < minValue){
+    if (smoothedData[i] < minValue || minIndex == -1){
       minIndex = i;
       minValue = smoothedData[i];
     }
