@@ -59,7 +59,15 @@ void loop()
       SG92R.write(90);
       delay(1000);
       int blockCheck();
-      blockMaxSum();
+
+      // use convolution code to find best index,
+      // which can be translated into angle or whatever
+      int bestIndex;
+      bestIndex = smoothAndFindMin(dataPoint);
+      Serial.print("best index to drive to:");
+      Serial.println(bestIndex);
+
+//      blockMaxSum();
       
 //      if(checkBothSides(turnToBlock) == "clear")
 //      {
