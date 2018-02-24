@@ -159,11 +159,13 @@ int smoothAndFindMin(int * data){
   for (i = 0; i < dataSize; i++){
 
     // print data then smoothed output shifted 
+    Serial.print(i); Serial.print(":\t");
+    Serial.print(data[i]); Serial.print("\t");
+    // only print smoothed data when not near edges
     if (i >= filterSize/2 && i < dataSize - filterSize/2){
-      printf("%d: %f\t%f\n", i, data[i], smoothedData[i-filterSize/2]);
-    } else{
-      printf("%d: %f\t\n", i, data[i]);
+	    Serial.print(smoothedData[i-filterSize/2]);
     }
+    Serial.print("\n");
   }
 
   // shift over by half filter (round down)
