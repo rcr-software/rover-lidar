@@ -169,7 +169,7 @@ int smoothAndFindMin(int * data){
   }
 
   // shift over by half filter (round down)
-  return minIndex - (filterSize / 2);
+  return minIndex + (filterSize / 2);
 }
     
 int blockCheck (int blockNum)
