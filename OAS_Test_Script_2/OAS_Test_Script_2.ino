@@ -58,7 +58,6 @@ void loop()
       sweepfn();
       SG92R.write(90);
       delay(1000);
-      int blockCheck();
 
       // use convolution code to find best index,
       // which can be translated into angle or whatever
