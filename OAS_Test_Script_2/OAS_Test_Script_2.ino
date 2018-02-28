@@ -8,6 +8,7 @@
 #include <Adafruit_VL53L0X.h>
   
 Adafruit_VL53L0X lox = Adafruit_VL53L0X();
+VL53L0X_RangingMeasurementData_t measure;
 
 #define servoPin 11
 #define LED 13
@@ -33,18 +34,17 @@ void setup()
     Serial.println(F("Failed to boot VL53L0X"));
     while(1);
   }
+  lox.rangingTest(&measure, false);
   
   Serial.println(F("VL53L0X Initialized\n\n"));
 
-  SG92R.attach(11);
+  SG92R.attach(servoPin);
   SG92R.write(90);
 }
 
 
 void loop()
 {
-  VL53L0X_RangingMeasurementData_t measure;
-  lox.rangingTest(&measure, false);
   rangePoint = measure.RangeMilliMeter;
 
   int turnToBlock = 3;
@@ -62,7 +62,7 @@ void loop()
       // use convolution code to find best index,
       // which can be translated into angle or whatever
       int bestIndex;
-      bestIndex = smoothAndFindMin(dataPoint);
+      bestIndex = smoothAndFindMax(dataPoint);
       Serial.print("best index to drive to: ");
       Serial.println(bestIndex);
     }
@@ -78,11 +78,8 @@ void sweepfn()
 {
   int i = 0;
   
-  while(i <= 180)
-  {
-    VL53L0X_RangingMeasurementData_t measure;
-    lox.rangingTest(&measure, false);
-    
+  for (i = 0; i < 180; i++)
+  {    
     if(measure.RangeStatus != 4);
     {
       SG92R.write(i);
@@ -98,15 +95,13 @@ void sweepfn()
       Serial.println(dataPoint[i]);
       delay(50);
     }
-    
-    i++;
   }
 }
 
 
 
 /* Max's convolution code. Returns angle 0-179 where smoothed
-   lidar reading is a minimum
+   lidar reading is a MAXIMUM
 
    Try tweaking the filter or adding another pass 
    for different results
@@ -132,12 +127,12 @@ Rectangular, Kernel Size = 9
 {1, 1, 1, 1, 1, 1, 1, 1, 1}
 */
 
-int smoothAndFindMin(int * data){
+int smoothAndFindMax(int * data){
 
   int smoothedData[dataSize-filterSize];
   int i, j;
-  int minValue;
-  int minIndex = -1;
+  int maxValue;
+  int maxIndex = -1;
 
   // iterate over data, nested iterate over filter and multiply in filter
   for (i = 0; i < dataSize + 1 - filterSize; i++){
@@ -146,10 +141,10 @@ int smoothAndFindMin(int * data){
       smoothedData[i] += data[i+j] * filter[j]
     }
 
-    //capture min value
-    if (smoothedData[i] < minValue || minIndex == -1){
-      minIndex = i;
-      minValue = smoothedData[i];
+    //capture max value
+    if (smoothedData[i] > maxValue || maxIndex == -1){
+      maxIndex = i;
+      maxValue = smoothedData[i];
     }
   }
 
@@ -169,5 +164,5 @@ int smoothAndFindMin(int * data){
   }
 
   // shift over by half filter (round down)
-  return minIndex + (filterSize / 2);
+  return maxIndex + (filterSize / 2);
 }
