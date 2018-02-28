@@ -117,6 +117,21 @@ const int filterSize = 9;
 
 // this filter is very sharp, a wider one might work better for this
 const int filter[9] = {1, 26, 264, 1055, 1672, 1055, 264, 26, 1};
+
+/* here are some other filters to try, from 
+this site: http://dev.theomader.com/gaussian-kernel-calculator/
+using this conversion: https://gist.github.com/robertmaxwilliams/bd064ac303a0f6b5257cbd6f17ee3c29
+
+Gaussian: Sigma = 3, Kernel Size = 17
+{1, 2, 5, 9, 14, 21, 27, 32, 34, 32, 27, 21, 14, 9, 5, 2, 1}
+
+Gaussian: Sigma = 2, Kernel Size = 9
+{1, 2, 4, 6, 7, 6, 4, 2, 1}
+
+Rectangular, Kernel Size = 9
+{1, 1, 1, 1, 1, 1, 1, 1, 1}
+*/
+
 int smoothAndFindMin(int * data){
 
   int smoothedData[dataSize-filterSize];
