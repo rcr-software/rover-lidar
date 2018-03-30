@@ -2,13 +2,11 @@
 #include <Arduino.h>
 #include <SPI.h>
 #include <SD.h>
-#include <Adafruit_Sensor.h>
 #include <Wire.h>
 #include <Servo.h>
 #include <Adafruit_VL53L0X.h>
   
 Adafruit_VL53L0X lox = Adafruit_VL53L0X();
-VL53L0X_RangingMeasurementData_t measure;
 
 #define servoPin 11
 #define LED 13
@@ -34,17 +32,20 @@ void setup()
     Serial.println(F("Failed to boot VL53L0X"));
     while(1);
   }
-  lox.rangingTest(&measure, false);
   
   Serial.println(F("VL53L0X Initialized\n\n"));
 
-  SG92R.attach(servoPin);
+  SG92R.attach(11);
   SG92R.write(90);
 }
 
 
 void loop()
 {
+VL53L0X_RangingMeasurementData_t measure;
+
+  lox.rangingTest(&measure, false);
+
   rangePoint = measure.RangeMilliMeter;
 
   int turnToBlock = 3;
@@ -53,7 +54,7 @@ void loop()
   {
     Serial.println(rangePoint);
     
-    if (rangePoint <= 800)
+    if (rangePoint <= 250)
     {
       sweepfn();
       SG92R.write(90);
@@ -78,8 +79,12 @@ void sweepfn()
 {
   int i = 0;
   
-  for (i = 0; i < 180; i++)
+  while (i < 180)
   {    
+	VL53L0X_RangingMeasurementData_t measure;
+
+    lox.rangingTest(&measure, false);
+  
     if(measure.RangeStatus != 4);
     {
       SG92R.write(i);
@@ -108,9 +113,9 @@ void sweepfn()
 */
 
 const int dataSize = 180;
-const int filterSize = 9;
+const int filterSize = 17;
 
-const int filter[9] = {1, 2, 5, 9, 14, 21, 27, 32, 34, 32, 27, 21, 14, 9, 5, 2, 1};
+const int filter[17] = {1, 2, 5, 9, 14, 21, 27, 32, 34, 32, 27, 21, 14, 9, 5, 2, 1};
 
 /* here are some other filters to try, from 
 this site: http://dev.theomader.com/gaussian-kernel-calculator/
