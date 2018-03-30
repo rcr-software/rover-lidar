@@ -42,7 +42,7 @@ void setup()
 
 void loop()
 {
-VL53L0X_RangingMeasurementData_t measure;
+  VL53L0X_RangingMeasurementData_t measure;
 
   lox.rangingTest(&measure, false);
 
@@ -79,12 +79,12 @@ void sweepfn()
 {
   int i = 0;
   
-  while (i < 180)
+  for (i=0; i < 180; i++)
   {    
-	VL53L0X_RangingMeasurementData_t measure;
+     VL53L0X_RangingMeasurementData_t measure;
 
     lox.rangingTest(&measure, false);
-  
+
     if(measure.RangeStatus != 4);
     {
       SG92R.write(i);
