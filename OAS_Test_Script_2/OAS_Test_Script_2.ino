@@ -134,11 +134,11 @@ Rectangular, Kernel Size = 9
 // makes values in the middle larger so it prefers to go straight
 // calculates -2 * |FLATNESS*x| + 1 shaped like this: \/ but flatter
 // where x is i / length
-const float FLATNESS = 0.2 //closer to zero is more flat
+const float FLATNESS = 0.2; //closer to zero is more flat
 float middleBias(int index, int size) {
-  float x = (float) (index / (float) size)
-  x -= ((float) size) / 2
-  return -2 * abs(FLATNESS * x)  + 1
+  float x = (float) (index / (float) size);
+  x -= ((float) size) / 2;
+  return -2 * abs(FLATNESS * x)  + 1;
 }
 
 int smoothAndFindMax(int * data){
@@ -152,10 +152,10 @@ int smoothAndFindMax(int * data){
   for (i = 0; i < dataSize + 1 - filterSize; i++){
     smoothedData[i] = 0;
     for (j = 0; j < filterSize; j++){
-      smoothedData[i] += data[i+j] * filter[j]
+      smoothedData[i] += data[i+j] * filter[j];
     }
     // make values in the middle larger so it prefers to go straight
-    smoothedData[i] = (int) smoothedData[i] * middleBias(i, dataSize)
+    smoothedData[i] = (int) smoothedData[i] * middleBias(i, dataSize);
 
     //capture max value
     if (smoothedData[i] > maxValue || maxIndex == -1){
